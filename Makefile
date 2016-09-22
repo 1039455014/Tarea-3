@@ -35,29 +35,33 @@ ej8:
 	./tarea3.x 8 20
 
 ej9:
-	./tarea3.x 9 20
+	./tarea3.x 9 300000
+	gnuplot graf_2.gnu
 
 ej10:
-	./tarea3.x 10 20 
+	./tarea3.x 10 100 
 
 ej11:
-	./tarea3.x 11 20
+	./tarea3.x 11 50
+	gnuplot graf_3.gnu
 
 ej12:
-	./tarea3.x 12 20
+	./tarea3.x 12 1000
 
 ej13:
-	./tarea3.x 13 20
+	./tarea3.x 13 300
+	gnuplot graf_5.gnu
 
 ej14:
-	./tarea3.x 14 20
+	./tarea3.x 14 2000000
+	gnuplot graf_4.gnu
 
 ej15:
 	./tarea3.x 15 20
 	gnuplot graf.gnu
 
 ej16:
-	./tarea3.x 16 20
+	./tarea3.x 16 5000
 
 grafica:
 	gnuplot graf.gnu

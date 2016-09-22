@@ -238,7 +238,7 @@ El programa recibe el valor del incremento dv de la velocidad y produce un archi
 La primer columna contiene el valor de la velocidad de la partícula v, la segunda el valor de v/c (c es la velocidad de la luz) y la
 tercera contiene el valor de la masa de la partícula.
 */
-valor_de_masa(double dv, int n){//(double dv, double vel_m_0, int n){ //n es la cantidad de valores diferentes de la velocidad de la particula que se quieren
+valor_de_masa(double dv, int n){//n es la cantidad de valores diferentes de la velocidad de la particula que se quieren
     int i;
     double d,m,vel_m_0;
     FILE *archivo;
@@ -393,7 +393,10 @@ La funcion caso_1(length) recibe un entero length y devuelve el tiempo de ejecuc
 donde c=2 es una constante.
 */
 double caso_1(int length){
-    int a[length],b[length],i;//c=2;
+    int *a,*b;//c=2.0;
+    a=(int*)malloc((size_t)length*sizeof(int));
+    b=(int*)malloc((size_t)length*sizeof(int));
+    int i;//c=2;
     double t_inicio,t_final,dif_tiempo;
     for(i=1; i<=length; i++){
         b[i-1]=i*i;
@@ -404,6 +407,8 @@ double caso_1(int length){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
     //printf("\t\nEl caso 1 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -420,7 +425,11 @@ dos y cuyo loop esta dentro de otro loop (el de tamaño de nvectors).
 */
 
 double caso_2(int length, int nvectors){
-    int a[length],b[length],c[length],i,k;
+    int *a,*b,*c;
+    a=(int*)malloc((size_t)length*sizeof(int));
+    b=(int*)malloc((size_t)length*sizeof(int));
+    c=(int*)malloc((size_t)length*sizeof(int));
+    int i,k;
     double t_inicio,t_final,dif_tiempo;
 
     for(i=1; i<=length; i++){
@@ -436,6 +445,9 @@ double caso_2(int length, int nvectors){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
+    free(c);
     //printf("El caso 2 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -447,14 +459,17 @@ comparacion_secuencia_operaciones(int n){
     int i;
     double c1=0.0,c2=0.0;
     printf("\n  Iteracion \tcaso 1 \t\tcaso 2\n");
+    FILE *pf=NULL;
+    pf=fopen("sec_opera_int.txt","w");
     for(i=1; i<=n; i++){
         c1=c1+caso_1(n);
         c2=c2+caso_2(n,n*n);//i*i);
-        printf("  %d).\t %12.3lf \t %12.3lf\n",i,c1/n,c2/n);
+        fprintf(pf,"  %d).\t %12.3lf \t %12.3lf\n",i,c1/(1.0*i),c2/(1.0*i));
 	c1=0.0;
 	c2=0.0;
     }
 	printf("\nSegun la comparacion con los dos casos es evidente que el caso 2 requiere de mas\n tiempo para ejecutarse esto es debido a que el periodo de reuso de c[i] hace que su localidad temporal se desvanezca. \n\n");
+	fclose(pf);
 }
 
 //punto 13
@@ -464,7 +479,9 @@ comparacion_secuencia_operaciones(int n){
 La funcion caso_1_float(length) es similar a la funcion caso_1(length) solo que los vectores a[] y b[] son ahora de tipo float
 */
 double caso_1_float(int length){
-    float a[length],b[length];//c=2.0;
+    float *a,*b;//c=2.0;
+    a=(float*)malloc((size_t)length*sizeof(float));
+    b=(float*)malloc((size_t)length*sizeof(float));
     int i;
     double t_inicio,t_final,dif_tiempo;
     for(i=1; i<=length; i++){
@@ -476,6 +493,8 @@ double caso_1_float(int length){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
     //printf("\t\nEl caso 1 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -485,7 +504,10 @@ La funcion caso_2_float(length, nvectors) es similar a la funcion caso_2(length,
 */
 
 double caso_2_float(int length, int nvectors){
-    float a[length],b[length],c[length];
+    float *a,*b,*c;
+    a=(float*)malloc((size_t)length*sizeof(float));
+    b=(float*)malloc((size_t)length*sizeof(float));
+    c=(float*)malloc((size_t)length*sizeof(float));		
     int i,k;
     double t_inicio,t_final,dif_tiempo;
 
@@ -502,6 +524,9 @@ double caso_2_float(int length, int nvectors){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
+    free(c);
     //printf("El caso 2 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -512,13 +537,16 @@ comparacion_secuencia_operaciones_float(int n){
     int i;
     double c1=0.0,c2=0.0;
     printf("\n  Iteracion \tcaso 1 \t\tcaso 2\n");
+    FILE *pf=NULL;
+    pf=fopen("sec_opera_float.txt","w");
     for(i=1; i<=n; i++){
         c1=c1+caso_1_float(n);
         c2=c2+caso_2_float(n,n*n);//i*i);
-        printf("  %d).\t %12.3lf \t %12.3lf\n",i,c1/n,c2/n);
+        fprintf(pf,"  %d).\t %12.3lf \t %12.3lf\n",i,c1/(1.0*i),c2/(1.0*i));
 	c1=0.0;
 	c2=0.0;
     }
+	fclose(pf);
 }
 //para double
 //caso 1
@@ -526,7 +554,9 @@ comparacion_secuencia_operaciones_float(int n){
 La funcion caso_1_double(length) es similar a la funcion caso_1(length) solo que los vectores a[] y b[] son ahora de tipo double
 */
 double caso_1_double(int length){
-    double a[length],b[length],c=2.0;
+    double *a,*b;//c=2.0;
+    a=(double*)malloc((size_t)length*sizeof(double));
+    b=(double*)malloc((size_t)length*sizeof(double));
     int i;
     double t_inicio,t_final,dif_tiempo;
     for(i=1; i<=length; i++){
@@ -534,10 +564,12 @@ double caso_1_double(int length){
     }
     t_inicio=clock();
     for(i=1; i<=length; i++){
-        a[i-1]=b[i-1]*c;
+        a[i-1]=b[i-1]*2.0;
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
     //printf("\t\nEl caso 1 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -547,7 +579,10 @@ La funcion caso_2_double(length, nvectors) es similar a la funcion caso_2(length
 */
 
 double caso_2_double(int length, int nvectors){
-    double a[length],b[length],c[length];
+    double *a,*b,*c;
+    a=(double*)malloc((size_t)length*sizeof(double));
+    b=(double*)malloc((size_t)length*sizeof(double));
+    c=(double*)malloc((size_t)length*sizeof(double));		
     int i,k;
     double t_inicio,t_final,dif_tiempo;
 
@@ -564,6 +599,9 @@ double caso_2_double(int length, int nvectors){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
+    free(c);
     //printf("El caso 2 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -574,13 +612,16 @@ comparacion_secuencia_operaciones_double(int n){
     int i;
     double c1=0.0,c2=0.0;
     printf("\n  Iteracion \tcaso 1 \t\tcaso 2\n");
+    FILE *pf=NULL;
+    pf=fopen("sec_opera_double.txt","w");
     for(i=1; i<=n; i++){
         c1=c1+caso_1_double(n);
         c2=c2+caso_2_double(n,n*n);//i*i);
-        printf("  %d).\t %12.3lf \t %12.3lf\n",i,c1/n,c2/n);
+        fprintf(pf,"  %d).\t %12.3lf \t %12.3lf\n",i,c1/(1.0*i),c2/(1.0*i));
 	c1=0.0;
 	c2=0.0;
     }
+	fclose(pf);
 }
 //para long double
 //caso 1
@@ -588,7 +629,9 @@ comparacion_secuencia_operaciones_double(int n){
 La funcion caso_1_longdouble(length) es similar a la funcion caso_1(length) solo que los vectores a[] y b[] son ahora de tipo longdouble
 */
 double caso_1_longdouble(int length){
-    long double a[length],b[length],c=2;
+    long double *a,*b;//c=2.0;
+    a=(long double*)malloc((size_t)length*sizeof(long double));
+    b=(long double*)malloc((size_t)length*sizeof(long double));
     int i;
     double t_inicio,t_final,dif_tiempo;
     for(i=1; i<=length; i++){
@@ -596,10 +639,12 @@ double caso_1_longdouble(int length){
     }
     t_inicio=clock();
     for(i=1; i<=length; i++){
-        a[i-1]=b[i-1]*c;
+        a[i-1]=b[i-1]*2.0;
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
     //printf("\t\nEl caso 1 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -609,7 +654,11 @@ La funcion caso_2_longdouble(length, nvectors) es similar a la funcion caso_2(le
 */
 
 double caso_2_longdouble(int length, int nvectors){
-    long double a[length],b[length],c[length];
+    long double *a,*b,*c;
+    a=(long double*)malloc((size_t)length*sizeof(long double));
+    b=(long double*)malloc((size_t)length*sizeof(long double));
+    c=(long double*)malloc((size_t)length*sizeof(long double));		
+    
     int i,k;
     double t_inicio,t_final,dif_tiempo;
 
@@ -626,6 +675,9 @@ double caso_2_longdouble(int length, int nvectors){
     }
     t_final=clock();
     dif_tiempo = t_final-t_inicio;
+    free(a);
+    free(b);
+    free(c);			
     //printf("El caso 2 tarda %12.3lf\n",dif_tiempo);
     return dif_tiempo;
 }
@@ -637,13 +689,16 @@ comparacion_secuencia_operaciones_longdouble(int n){
     int i;
     double c1=0.0,c2=0.0;
     printf("\n  Iteracion \tcaso 1 \t\tcaso 2\n");
+    FILE *pf=NULL;
+    pf=fopen("sec_opera_long_double.txt","w");	
     for(i=1; i<=n; i++){
         c1=c1+caso_1_longdouble(n);
         c2=c2+caso_2_longdouble(n,n*n);//i*i);
-        printf("  %d).\t %12.3lf \t %12.3lf\n",i,c1/n,c2/n);
+        fprintf(pf,"  %d).\t %12.3lf \t %12.3lf\n",i,c1/(1.0*i),c2/(1.0*i));
 	c1=0.0;
 	c2=0.0;
     }
+	fclose(pf);
 }
 /*
 La funcion comparacion_secu_opera_de_todo_tipo(n) recibe un entero n y ejecuta las funciones comparacion_secuencia_operaciones(n), comparacion_secuencia_operaciones_float(n), comparacion_secuencia_operaciones_double(n) y comparacion_secuencia_operaciones_longdouble(n), para comparar sus valores
@@ -700,8 +755,11 @@ for (loop=0; loop<10; loop++) {
    }
 */
 double codigo_loop_1er_orden(int N){
-    int loop,i,y[N];
-    double t_inicio, t_final,dif_tiempo,a[N],x[N];
+    int loop,i,*y;
+    double t_inicio, t_final,dif_tiempo,*a,*x;
+    a=(double*)malloc((size_t)N*sizeof(double));
+    x=(double*)malloc((size_t)N*sizeof(double));
+    y=(int*)malloc((size_t)N*sizeof(int));	
     for(loop=0; loop<N; loop++){
         x[loop]=loop;
         y[loop]=loop*loop;
@@ -726,8 +784,11 @@ for (i=0; i<N; i++) {
    }
 */
 double codigo_loop_2do_orden(int N){
-    int loop,i,y[N];
-    double t_inicio, t_final,dif_tiempo,a[N],x[N];
+    int loop,i,*y;
+    double t_inicio, t_final,dif_tiempo,*a,*x;//alocacion dinamica de memoria
+    a=(double*)malloc((size_t)N*sizeof(double));
+    x=(double*)malloc((size_t)N*sizeof(double));	
+    y=(int*)malloc((size_t)N*sizeof(int));
     for(loop=0; loop<N; loop++){
         x[loop]=loop;
         y[loop]=loop*loop;
@@ -749,18 +810,20 @@ La funcion comparacion_1er_y_2do_orden(N) recibe un entero N y devuelve 10 tiemp
 comparacion_1er_y_2do_orden(int N){
     double c1=0, c2=0;
     int i,j;	
-
+	FILE *fp=NULL;
+	fp=fopen("compa_1er_orden_vs_2do_orden.txt","w");
     for(j=1; j<10; j++){
 	    //for(i=1; i<N; i++){
 		c1=c1+codigo_loop_1er_orden(N);
 		c2=c2+codigo_loop_2do_orden(N);	
 	    //}
-            printf("\n Iteracion  \t\t  promedio loop 1er orden  \t\t  promedio loop 2do orden \n");  
-	    printf("      %d \t\t     %16.8lf \t\t       %16.8lf\n\n",j,c1/1.0*j,c2/1.0*j);
+            //printf("\n Iteracion  \t\t  promedio loop 1er orden  \t\t  promedio loop 2do orden \n");  
+	    fprintf(fp,"      %d \t\t     %16.8lf \t\t       %16.8lf\n\n",j,c1/(1.0*j),c2/(1.0*j));
 	c1=0;
 	c2=0;
     }
 	printf("\nEl loop de primer orden debe demorarse mas tiempo pues el periodo de reuso de una\n variable x[i] es N, un valor que puede que puede acabar con su localidad temporal\n en la memoria cache, contrario a lo que sucede con el loop de segundo orden, que su periodo\n de reuso es mas frecuente por lo tanto la ejecucion del programa debe ser mas rapida.\n\n");
+	fclose(fp);
 }
 //punto 15
 /*
@@ -817,6 +880,7 @@ double Multipl_de2_matri_3(int a[max][max], int b[max][max], int n){
     return dif_tiempo;
 }
 
+
 compara_produ_2_matri(int a[max][max], int b[max][max], int n){
     double M1=0.0,M2=0.0,M3=0.0;
     int i,j;
@@ -829,9 +893,6 @@ compara_produ_2_matri(int a[max][max], int b[max][max], int n){
         M2=M2+Multipl_de2_matri_2(a,b,n);
         M3=M3+Multipl_de2_matri_3(a,b,n);
         fprintf(pf,"%d  \t %16.8lf \t %16.8lf \t %16.8lf\n",j,M1/(1.0*j),M2/(1.0*j),M3/(1.0*j));
-	//fprintf(pf1,"%d   \t %16.8lf\n",j,M1/(1.0*j));
-	//fprintf(pf2,"%d   \t %16.8lf\n",j,M2/(1.0*j));
-	//fprintf(pf3,"%d   \t %16.8lf\n",j,M3/(1.0*j));
 	M1=0.0;
 	M2=0.0;
 	M3=0.0;
@@ -874,16 +935,22 @@ generaf(double v[max][max], int m, int n, int mayor, int menor)
 
 }
 
-float sumatoria_fracturada(float x, int N){
+
+
+//punto 16
+
+double sumatoria_fracturada(float x, int N){
     x=x*M_PI/180.0;
     double dif_tiempo,t_inicio,t_final;
     int i;
-    float s=x,a[max],b[max];
+    float s=x,*a,*b;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
     float signo=1.0;
     t_inicio=clock();
     for(i=0; i<N; i++){
         signo=(-1.0)*signo;
-        a[i]=signo*pow(x,2*(i+1)+1);
+        a[i]=signo*pow(x,2.0*(i+1)+1);
         b[i]=1.0/factorial(2.0*(i+1)+1);
         s+=a[i]*b[i];
     }
@@ -897,8 +964,10 @@ float sumatoria_fracturada(float x, int N){
     t_final=clock();
     */
     dif_tiempo=t_final-t_inicio;
-    return s;
-    //return dif_tiempo;
+    free(a);
+    free(b);
+    //return s;
+    return dif_tiempo;
 }
 /*
 float sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos es par
@@ -927,11 +996,13 @@ float sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos 
 */
 
 
-float sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos es par
+double sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos es par
     x=x*M_PI/180.0;
     double dif_tiempo,t_inicio,t_final;
     int i;
-    float s1=x,s2=0,a[max],b[max],s;
+    float s1=x,s2=0,*a,*b,s;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
     float signo=1.0;
     /*
     for(i=0; i<N; i++){
@@ -942,7 +1013,7 @@ float sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos 
     t_inicio=clock();
     for(i=0; i<(N+1)/2; i++){//for(i=0; i<floor(N-1)/2; i++){ i<(N-1)/2+1
         signo=(-1.0)*signo;
-        a[2*i]=signo*pow(x,2*(2*i+1)+1);
+        a[2*i]=signo*pow(x,2.0*(2*i+1)+1);
         b[2*i]=1.0/factorial(2.0*(2*i+1)+1);
         signo=(-1.0)*signo;
         a[2*i+1]=signo*pow(x,2*(2*i+2)+1);
@@ -955,17 +1026,21 @@ float sumatoria_fracturada_en2(float x, int N){ //solo si el numero de terminos 
     t_final=clock();
     dif_tiempo=t_final-t_inicio;
     s=s1+s2;
+    free(a);
+    free(b);
     //return s;
     return dif_tiempo;
 }
 
 
-float sumatoria_fracturada_en3(float x, int N){ //solo si el numero de terminos es par
+double sumatoria_fracturada_en3(float x, int N){
     x=x*M_PI/180.0;
     double dif_tiempo,t_inicio,t_final;
     int i;
-    float s1=x,s2=0,s3=0,a[max],b[max],s;
+    float s1=x,s2=0,s3=0,*a,*b,s;
     float signo=1.0;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
     /*
     for(i=0; i<N; i++){
         signo=(-1.0)*signo;
@@ -973,28 +1048,243 @@ float sumatoria_fracturada_en3(float x, int N){ //solo si el numero de terminos 
         b[i]=1.0/factorial(2.0*(i+1)+1);
     }*/
     t_inicio=clock();
-    for(i=0; i<(N+1)/2; i++){//for(i=0; i<floor(N-1)/2; i++){ i<(N-1)/2+1
+    for(i=0; i<(N+1)/3; i++){//for(i=0; i<floor(N-1)/2; i++){ i<(N-1)/2+1
         signo=(-1.0)*signo;
-        a[2*i]=signo*pow(x,2*(2*i+1)+1);
-        b[2*i]=1.0/factorial(2.0*(2*i+1)+1);
+        a[3*i]=signo*pow(x,2.0*(3*i+1)+1);
+        b[3*i]=1.0/factorial(2.0*(3*i+1)+1);
         signo=(-1.0)*signo;
-        a[2*i+1]=signo*pow(x,2*(2*i+2)+1);
-        b[2*i+1]=1.0/factorial(2.0*(2*i+2)+1);
+        a[3*i+1]=signo*pow(x,2.0*(3*i+2)+1);
+        b[3*i+1]=1.0/factorial(2.0*(3*i+2)+1);
+	signo=(-1.0)*signo;
+        a[3*i+2]=signo*pow(x,2.0*(3*i+3)+1);
+        b[3*i+2]=1.0/factorial(2.0*(3*i+3)+1);
 
-        s1+=a[2*i]*b[2*i];
-        s2+=a[2*i+1]*b[2*i+1];
-        //printf("\t\t\t%d %12.9f\n \t\t\t%d %12.9f, %d\n",2*i,a[2*i]*b[2*i],2*i+1,a[2*i+1]*b[2*i+1],(N-1)/2+1);
+        s1+=a[3*i]*b[3*i];
+        s2+=a[3*i+1]*b[3*i+1];
+	s3+=a[3*i+2]*b[3*i+2];
+        //printf("\t\t\t%d %12.9f\n \t\t\t%d %12.9f, %d\n",2*i,a[2*i]*b[2*i],2*i+1,a[2*i+1]*b[2*i+1],(N+1)/3);
     }
     t_final=clock();
     dif_tiempo=t_final-t_inicio;
     s=s1+s2+s3;
+    free(a);
+    free(b);
     //return s;
     return dif_tiempo;
 }
 
+
+double sumatoria_fracturada_en4(float x, int N){
+    x=x*M_PI/180.0;
+    double dif_tiempo,t_inicio,t_final;
+    int i;
+    float s1=x,s2=0,s3=0,s4=0,*a,*b,s;
+    float signo=1.0;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
+    
+    t_inicio=clock();
+    for(i=0; i<(N+1)/4; i++){
+        signo=(-1.0)*signo;
+        a[4*i]=signo*pow(x,2.0*(4*i+1)+1);
+        b[4*i]=1.0/factorial(2.0*(4*i+1)+1);
+        signo=(-1.0)*signo;
+        a[4*i+1]=signo*pow(x,2.0*(4*i+2)+1);
+        b[4*i+1]=1.0/factorial(2.0*(4*i+2)+1);
+	signo=(-1.0)*signo;
+        a[4*i+2]=signo*pow(x,2.0*(4*i+3)+1);
+        b[4*i+2]=1.0/factorial(2.0*(4*i+3)+1);
+	signo=(-1.0)*signo;
+        a[4*i+3]=signo*pow(x,2.0*(4*i+4)+1);
+        b[4*i+3]=1.0/factorial(2.0*(4*i+4)+1);
+
+        s1+=a[4*i]*b[4*i];
+        s2+=a[4*i+1]*b[4*i+1];
+	s3+=a[4*i+2]*b[4*i+2];
+	s4+=a[4*i+3]*b[4*i+3];
+        //printf("\t\t\t%d %12.9f\n \t\t\t%d %12.9f, %d\n",2*i,a[2*i]*b[2*i],2*i+1,a[2*i+1]*b[2*i+1],(N+1)/3);
+    }
+    t_final=clock();
+
+    dif_tiempo=t_final-t_inicio;
+    s=s1+s2+s3+s4;
+    free(a);
+    free(b);
+    //return s;
+    return dif_tiempo;
+}
+
+
+
+double sumatoria_fracturada_en5(float x, int N){
+    x=x*M_PI/180.0;
+    double dif_tiempo,t_inicio,t_final;
+    int i;
+    float s1=x,s2=0,s3=0,s4=0,s5=0,*a,*b,s;
+    float signo=1.0;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
+    
+    t_inicio=clock();
+    for(i=0; i<(N+1)/5; i++){
+        signo=(-1.0)*signo;
+        a[5*i]=signo*pow(x,2.0*(5*i+1)+1);
+        b[5*i]=1.0/factorial(2.0*(5*i+1)+1);
+        signo=(-1.0)*signo;
+        a[5*i+1]=signo*pow(x,2.0*(5*i+2)+1);
+        b[5*i+1]=1.0/factorial(2.0*(5*i+2)+1);
+	signo=(-1.0)*signo;
+        a[5*i+2]=signo*pow(x,2.0*(5*i+3)+1);
+        b[5*i+2]=1.0/factorial(2.0*(5*i+3)+1);
+	signo=(-1.0)*signo;
+        a[5*i+3]=signo*pow(x,2.0*(5*i+4)+1);
+        b[5*i+3]=1.0/factorial(2.0*(5*i+4)+1);
+	signo=(-1.0)*signo;
+        a[5*i+4]=signo*pow(x,2.0*(5*i+5)+1);
+        b[5*i+4]=1.0/factorial(2.0*(5*i+5)+1);
+
+        s1+=a[5*i]*b[5*i];
+        s2+=a[5*i+1]*b[5*i+1];
+	s3+=a[5*i+2]*b[5*i+2];
+	s4+=a[5*i+3]*b[5*i+3];
+	s5+=a[5*i+4]*b[5*i+4];
+        //printf("\t\t\t%d %12.9f\n \t\t\t%d %12.9f, %d\n",2*i,a[2*i]*b[2*i],2*i+1,a[2*i+1]*b[2*i+1],(N+1)/3);
+    }
+    t_final=clock();
+
+    dif_tiempo=t_final-t_inicio;
+    s=s1+s2+s3+s4+s5;
+    free(a);
+    free(b);
+    //return s;
+    return dif_tiempo;
+}
+
+
+
+double sumatoria_fracturada_en6(float x, int N){
+    x=x*M_PI/180.0;
+    double dif_tiempo,t_inicio,t_final;
+    int i;
+    float s1=x,s2=0,s3=0,s4=0,s5=0,s6=0,*a,*b,s;
+    float signo=1.0;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
+    
+    t_inicio=clock();
+    for(i=0; i<(N+1)/6; i++){
+        signo=(-1.0)*signo;
+        a[6*i]=signo*pow(x,2.0*(6*i+1)+1);
+        b[6*i]=1.0/factorial(2.0*(6*i+1)+1);
+        signo=(-1.0)*signo;
+        a[6*i+1]=signo*pow(x,2.0*(6*i+2)+1);
+        b[6*i+1]=1.0/factorial(2.0*(6*i+2)+1);
+	signo=(-1.0)*signo;
+        a[6*i+2]=signo*pow(x,2.0*(6*i+3)+1);
+        b[6*i+2]=1.0/factorial(2.0*(6*i+3)+1);
+	signo=(-1.0)*signo;
+        a[6*i+3]=signo*pow(x,2.0*(6*i+4)+1);
+        b[6*i+3]=1.0/factorial(2.0*(6*i+4)+1);
+	signo=(-1.0)*signo;
+        a[6*i+4]=signo*pow(x,2.0*(6*i+5)+1);
+        b[6*i+4]=1.0/factorial(2.0*(6*i+5)+1);
+	signo=(-1.0)*signo;
+        a[6*i+5]=signo*pow(x,2.0*(6*i+6)+1);
+        b[6*i+5]=1.0/factorial(2.0*(6*i+6)+1);
+
+
+        s1+=a[6*i]*b[6*i];
+        s2+=a[6*i+1]*b[6*i+1];
+	s3+=a[6*i+2]*b[6*i+2];
+	s4+=a[6*i+3]*b[6*i+3];
+	s5+=a[6*i+4]*b[6*i+4];
+	s6+=a[6*i+5]*b[6*i+5];
+        //printf("\t\t\t%d %12.9f\n \t\t\t%d %12.9f, %d\n",2*i,a[2*i]*b[2*i],2*i+1,a[2*i+1]*b[2*i+1],(N+1)/3);
+    }
+    t_final=clock();
+
+    dif_tiempo=t_final-t_inicio;
+    s=s1+s2+s3+s4+s5+s6;
+    free(a);
+    free(b);
+    //return s;
+    return dif_tiempo;
+}
+
+
+double sumatoria_fracturada_en10(float x, int N){
+    x=x*M_PI/180.0;
+    double dif_tiempo,t_inicio,t_final;
+    int i;
+    float s1=x,s2=0,s3=0,s4=0,s5=0,s6=0,s7=0,s8=0,s9=0,s10=0,*a,*b,s;
+    float signo=1.0;
+    a=(float*)malloc((size_t)N*sizeof(float));
+    b=(float*)malloc((size_t)N*sizeof(float));
+    
+    t_inicio=clock();
+    for(i=0; i<(N)/10; i++){
+        signo=(-1.0)*signo;
+        a[10*i]=signo*pow(x,2.0*(10*i+1)+1);
+        b[10*i]=1.0/factorial(2.0*(10*i+1)+1);
+        signo=(-1.0)*signo;
+        a[10*i+1]=signo*pow(x,2.0*(10*i+2)+1);
+        b[10*i+1]=1.0/factorial(2.0*(10*i+2)+1);
+	signo=(-1.0)*signo;
+        a[10*i+2]=signo*pow(x,2.0*(10*i+3)+1);
+        b[10*i+2]=1.0/factorial(2.0*(10*i+3)+1);
+	signo=(-1.0)*signo;
+        a[10*i+3]=signo*pow(x,2.0*(10*i+4)+1);
+        b[10*i+3]=1.0/factorial(2.0*(10*i+4)+1);
+	signo=(-1.0)*signo;
+        a[10*i+4]=signo*pow(x,2.0*(10*i+5)+1);
+        b[10*i+4]=1.0/factorial(2.0*(10*i+5)+1);
+	signo=(-1.0)*signo;
+        a[10*i+5]=signo*pow(x,2.0*(10*i+6)+1);
+        b[10*i+5]=1.0/factorial(2.0*(10*i+6)+1);
+	signo=(-1.0)*signo;
+        a[10*i+6]=signo*pow(x,2.0*(10*i+7)+1);
+        b[10*i+6]=1.0/factorial(2.0*(10*i+7)+1);
+	signo=(-1.0)*signo;
+        a[10*i+7]=signo*pow(x,2.0*(10*i+8)+1);
+        b[10*i+7]=1.0/factorial(2.0*(10*i+8)+1);
+	signo=(-1.0)*signo;
+        a[10*i+8]=signo*pow(x,2.0*(10*i+9)+1);
+        b[10*i+8]=1.0/factorial(2.0*(10*i+9)+1);
+	signo=(-1.0)*signo;
+        a[10*i+9]=signo*pow(x,2.0*(10*i+10)+1);
+        b[10*i+9]=1.0/factorial(2.0*(10*i+10)+1);
+
+
+        s1+=a[10*i]*b[10*i];
+        s2+=a[10*i+1]*b[10*i+1];
+	s3+=a[10*i+2]*b[10*i+2];
+	s4+=a[10*i+3]*b[10*i+3];
+	s5+=a[10*i+4]*b[10*i+4];
+	s6+=a[10*i+5]*b[10*i+5];
+	s7+=a[10*i+6]*b[10*i+6];
+	s8+=a[10*i+7]*b[10*i+7];
+	s9+=a[10*i+8]*b[10*i+8];
+	s10+=a[10*i+9]*b[10*i+9];
+ 
+    }
+    t_final=clock();
+
+    dif_tiempo=t_final-t_inicio;
+    s=s1+s2+s3+s4+s5+s6+s7+s8+s9+s10;
+    free(a);
+    free(b);
+    //return s;
+    return dif_tiempo;
+}
+
+
+
+
+
 int main(int argc, char *argv[]){
-  int N,i;
-  float x,a,b,x1,x2,x3;
+  int N,i,j;
+  float x,a,b;
+  double x1,x2,x3,x4,x5,x6,x10;
   char operacion[15];
   FILE *archivo,*archivo_read,*archivo_salida;
   double c,c1,c2;
@@ -1029,7 +1319,7 @@ int main(int argc, char *argv[]){
   case 4:
 	//printf("\nIngrese un numero para calcular el factorial: ");
 	//scanf("%f",&var3);
-	printf("El factorial de %12.0f es %12.3f\n",var,factorial(var));
+	printf("El factorial de %f es %12.3f\n",var,factorial(var));
 	break;
   
   case 5:
@@ -1057,7 +1347,9 @@ int main(int argc, char *argv[]){
 	break;
   
   case 9:
-	
+	printf("ingrese el incremento dv: ");
+	scanf("%lf",&c);
+	valor_de_masa(c, var10);
 	break;
   
   case 10:	
@@ -1067,19 +1359,20 @@ int main(int argc, char *argv[]){
 	break;
   
   case 11:
-	comparacion_tiempo_ejecu(50);
+	comparacion_tiempo_ejecu(var10);
 	break;
   
   case 12:
-	
+	comparacion_secuencia_operaciones(var10);
 	break;
   
   case 13:
-	
+	comparacion_secu_opera_de_todo_tipo(var10);
 	break;
   
   case 14:
-	
+	printf("\n Iteracion  \t\t  promedio loop 1er orden  \t\t  promedio loop 2do orden \n");  
+	comparacion_1er_y_2do_orden(var10); 
 	break;
     
   case 15:
@@ -1116,11 +1409,27 @@ int main(int argc, char *argv[]){
     break;
   
   case 16:
-	
+        x1=0, x2=0, x3=0,x4=0,x5=0,x6=0,x10=0;
+	for(j=1; j<60; j++){
+	x1=x1+sumatoria_fracturada(45, var10);
+        x2=x2+sumatoria_fracturada_en2(45, var10);
+        x3=x3+sumatoria_fracturada_en3(45, var10);
+	x4=x4+sumatoria_fracturada_en4(45, var10);
+	x5=x5+sumatoria_fracturada_en5(45, var10);
+	x6=x6+sumatoria_fracturada_en6(45, var10);
+	x10=x10+sumatoria_fracturada_en10(45, var10);
+        printf("\n%d \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf\n\n",j,x1/(1.0*j),x2/(1.0*j),x3/(1.0*j),x4/(1.0*j),x5/(1.0*j),x6/(1.0*j),x10/(1.0*j));
+	x1=0;
+	x2=0;
+        x3=0;
+	x4=0;
+	x5=0;
+	x6=0;
+ 	x10=0;
+	}
 	break;
 
   default : printf("!No es una opcion permitida¡");
-    
   }
   /*/	
     /*int **Q;
@@ -1131,6 +1440,7 @@ int main(int argc, char *argv[]){
                     Q[l]=malloc((size_t*)sizeof(int)*Columna);
     
             }
+	
 */    
 
 /*
